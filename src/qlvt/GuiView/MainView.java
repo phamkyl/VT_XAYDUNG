@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -178,8 +179,13 @@ public class MainView extends JFrame {
         branchManagementView.setVisible(true);
     }
 
-    private void openKhoManagementView() {
-        WarehouseManagementView warehouseManagementView = new WarehouseManagementView(this);
+    private void openKhoManagementView()  {
+        WarehouseManagementView warehouseManagementView = null;
+        try {
+            warehouseManagementView = new WarehouseManagementView(this,maChiNhanh);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         warehouseManagementView.setVisible(true);
     }
 

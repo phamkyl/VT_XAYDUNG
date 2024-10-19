@@ -12,11 +12,13 @@ import java.util.List;
 public class WarehouseManagementView extends JDialog {
     private DefaultTableModel model;
     private WarehouseDAO warehouseDAO;
+    private int maChiNhanh; // Branch ID
 
-    public WarehouseManagementView(JFrame parent) {
+    public WarehouseManagementView(JFrame parent, int maChiNhanh) throws SQLException {
         super(parent, "Quản Lý Kho", true);
         setSize(600, 450);
         setLocationRelativeTo(parent);
+        this.maChiNhanh = maChiNhanh; // Initialize branch ID
         warehouseDAO = new WarehouseDAO();
 
         JPanel panel = new JPanel();
@@ -29,7 +31,7 @@ public class WarehouseManagementView extends JDialog {
         JScrollPane scrollPane = new JScrollPane(warehouseTable);
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        // Add buttons for add, edit, delete, exit, and back
+        // Add buttons for adding, editing, deleting, exiting, and going back
         JPanel buttonPanel = new JPanel();
         JButton addButton = new JButton("Thêm");
         JButton editButton = new JButton("Sửa");
@@ -44,98 +46,102 @@ public class WarehouseManagementView extends JDialog {
         buttonPanel.add(exitButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Action for the Add button
-        addButton.addActionListener(e -> {
-            String maKhoStr = JOptionPane.showInputDialog("Nhập Mã Kho:");
-            String tenKho = JOptionPane.showInputDialog("Nhập Tên Kho:");
-            String diaChi = JOptionPane.showInputDialog("Nhập Địa Chỉ:");
-            String maChiNhanhStr = JOptionPane.showInputDialog("Nhập Mã Chi Nhánh:");
+        // Add action
+        addButton.addActionListener(e -> addWarehouse());
 
-            if (maKhoStr != null && tenKho != null && diaChi != null && maChiNhanhStr != null) {
-                try {
-                    int maKho = Integer.parseInt(maKhoStr);
-                    int maChiNhanh = Integer.parseInt(maChiNhanhStr);
-                    Warehouse newWarehouse = new Warehouse(maKho, tenKho, diaChi, maChiNhanh);
-                    warehouseDAO.addWarehouse(newWarehouse);
-                    model.addRow(new Object[]{maKho, tenKho, diaChi, maChiNhanh});
-                } catch (NumberFormatException | SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
-                }
-            }
-        });
+        // Edit action
+        editButton.addActionListener(e -> editWarehouse(warehouseTable));
 
-        // Action for the Edit button
-        editButton.addActionListener(e -> {
-            int selectedRow = warehouseTable.getSelectedRow();
-            if (selectedRow != -1) {
-                int maKho = (int) model.getValueAt(selectedRow, 0);
-                String tenKho = JOptionPane.showInputDialog("Nhập Tên Kho:", model.getValueAt(selectedRow, 1));
-                String diaChi = JOptionPane.showInputDialog("Nhập Địa Chỉ:", model.getValueAt(selectedRow, 2));
-                String maChiNhanhStr = JOptionPane.showInputDialog("Nhập Mã Chi Nhánh:", model.getValueAt(selectedRow, 3));
+        // Delete action
+        deleteButton.addActionListener(e -> deleteWarehouse(warehouseTable));
 
-                if (maChiNhanhStr != null) {
-                    try {
-                        int maChiNhanh = Integer.parseInt(maChiNhanhStr);
-                        Warehouse updatedWarehouse = new Warehouse(maKho, tenKho, diaChi, maChiNhanh);
-                        warehouseDAO.updateWarehouse(updatedWarehouse);
-                        model.setValueAt(tenKho, selectedRow, 1);
-                        model.setValueAt(diaChi, selectedRow, 2);
-                        model.setValueAt(maChiNhanh, selectedRow, 3);
-                    } catch (NumberFormatException | SQLException ex) {
-                        ex.printStackTrace();
-                        JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
-                    }
-                }
-            }
-        });
+        // Exit action
+        exitButton.addActionListener(e -> System.exit(0));
 
-        // Action for the Delete button
-        deleteButton.addActionListener(e -> {
-            int selectedRow = warehouseTable.getSelectedRow();
-            if (selectedRow != -1) {
-                int maKho = (int) model.getValueAt(selectedRow, 0);
-                try {
-                    warehouseDAO.deleteWarehouse(maKho);
-                    model.removeRow(selectedRow);
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
-                }
-            }
-        });
-
-        // Action for the Exit button
-        exitButton.addActionListener(e -> {
-            System.exit(0);
-        });
-
-        // Action for the Back button
+        // Back action
         backButton.addActionListener(e -> {
-            this.dispose(); // Close the warehouse management window
-            // Optionally, call a method from the main view to show admin options
-            MainView mainView = new MainView(); // Assume you have a MainView class to call back options
-            mainView.showOptions(new DefaultTableModel());; // Display the admin options again
+            this.dispose();
+            openMainView();
         });
 
         loadWarehouses();
         setContentPane(panel);
     }
 
-    private void loadWarehouses() {
-        try {
-            List<Warehouse> warehouses = warehouseDAO.getAllWarehouses();
-            for (Warehouse warehouse : warehouses) {
-                model.addRow(new Object[]{
-                        warehouse.getMaKho(),
-                        warehouse.getTenKho(),
-                        warehouse.getDiaChi(),
-                        warehouse.getMaChiNhanh()
-                });
+    private void addWarehouse() {
+        // Input warehouse info
+        String maKhoStr = JOptionPane.showInputDialog("Nhập Mã Kho:");
+        String tenKho = JOptionPane.showInputDialog("Nhập Tên Kho:");
+        String diaChi = JOptionPane.showInputDialog("Nhập Địa Chỉ:");
+
+        if (maKhoStr != null && tenKho != null && diaChi != null) {
+            try {
+                int maKho = Integer.parseInt(maKhoStr);
+                Warehouse newWarehouse = new Warehouse(maKho, tenKho, diaChi, maChiNhanh);
+                warehouseDAO.addWarehouse(newWarehouse);
+                model.addRow(new Object[]{maKho, tenKho, diaChi, maChiNhanh});
+            } catch (NumberFormatException | SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
+        }
+    }
+
+    private void editWarehouse(JTable warehouseTable) {
+        int selectedRow = warehouseTable.getSelectedRow();
+        if (selectedRow != -1) {
+            int maKho = (int) model.getValueAt(selectedRow, 0);
+            String tenKho = JOptionPane.showInputDialog("Nhập Tên Kho:", model.getValueAt(selectedRow, 1));
+            String diaChi = JOptionPane.showInputDialog("Nhập Địa Chỉ:", model.getValueAt(selectedRow, 2));
+
+            if (tenKho != null && diaChi != null) {
+                try {
+                    Warehouse updatedWarehouse = new Warehouse(maKho, tenKho, diaChi, maChiNhanh);
+                    warehouseDAO.updateWarehouse(updatedWarehouse);
+                    model.setValueAt(tenKho, selectedRow, 1);
+                    model.setValueAt(diaChi, selectedRow, 2);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một kho để sửa.");
+        }
+    }
+
+    private void deleteWarehouse(JTable warehouseTable) {
+        int selectedRow = warehouseTable.getSelectedRow();
+        if (selectedRow != -1) {
+            int maKho = (int) model.getValueAt(selectedRow, 0);
+            try {
+                warehouseDAO.deleteWarehouse(maKho);
+                model.removeRow(selectedRow);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một kho để xóa.");
+        }
+    }
+
+    private void openMainView() {
+        String userRole = "Admin"; // Example role
+        String userName = "User"; // Example user
+        MainView mainView = new MainView(userRole, userName, maChiNhanh); // Open the main view with parameters
+        mainView.setVisible(true);
+    }
+
+    private void loadWarehouses() throws SQLException {
+        List<Warehouse> warehouses = warehouseDAO.getWarehousesByBranch(maChiNhanh);
+        for (Warehouse warehouse : warehouses) {
+            model.addRow(new Object[]{
+                    warehouse.getMaKho(),
+                    warehouse.getTenKho(),
+                    warehouse.getDiaChi(),
+                    warehouse.getMaChiNhanh()
+            });
         }
     }
 }
