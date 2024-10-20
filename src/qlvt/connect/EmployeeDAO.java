@@ -152,8 +152,8 @@ public class EmployeeDAO {
                 return DistributedDatabaseConnection.SERVER2_URL; // Connect to SERVER1_URL for branch 1
             case 2:
                 return DistributedDatabaseConnection.SERVER3_URL; // Connect to SERVER2_URL for branch 2
-            case 3:
-                return DistributedDatabaseConnection.SERVER4_URL; // Connect to SERVER3_URL for branch 3
+           // case 3:
+                //return DistributedDatabaseConnection.SERVER4_URL; // Connect to SERVER3_URL for branch 3
             // Add more cases as needed for additional branches
             default:
                 throw new IllegalArgumentException("Chi nhánh không hợp lệ: " + maChiNhanh);

@@ -121,7 +121,7 @@ public class BranchDAO {
             case 2:
                 return DistributedDatabaseConnection.SERVER3_URL; // URL server chứa chi nhánh 2
             case 3:
-                return DistributedDatabaseConnection.SERVER4_URL; // URL server chứa chi nhánh 3
+              //  return DistributedDatabaseConnection.SERVER4_URL; // URL server chứa chi nhánh 3
             // Add more branches and corresponding server URLs if needed
             default:
                 throw new IllegalArgumentException("Chi nhánh không hợp lệ: " + maChiNhanh);

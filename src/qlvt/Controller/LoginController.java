@@ -35,14 +35,14 @@ public class LoginController {
                 SwingUtilities.invokeLater(() -> {
                     MainView mainView;
                     switch (phanQuyen) {
-                        case "Admin": // quản lí 2 chi nhánh -- all( có tất cả các quyền)
-                            mainView = new MainView("Admin", employee.getHoTen(), maChiNhanh);
+                        case "admin": // quản lí 2 chi nhánh -- all( có tất cả các quyền)
+                            mainView = new MainView("admin", employee.getHoTen(), maChiNhanh);
                             break;
                         case "Quản lý": // quản lí 1 chi nhánh - xem danh sách chi nhánh, nhân viên - danh sách chung ( được quyền xem) -danh sách của chi nhánh đang quản lí
                             mainView = new MainView("Quản lý", employee.getHoTen(), maChiNhanh);
                             break;
-                        case "Nhân viên": // nhân viên 1 chi nhánh  - xem
-                            mainView = new MainView("User", employee.getHoTen(), maChiNhanh);
+                        case "employee": // nhân viên 1 chi nhánh  - xem
+                            mainView = new MainView("employee", employee.getHoTen(), maChiNhanh);
                             break;
                         default:
                             loginView.showError("Không xác định quyền!");

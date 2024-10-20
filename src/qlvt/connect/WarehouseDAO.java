@@ -136,8 +136,8 @@ public class WarehouseDAO {
                 return DistributedDatabaseConnection.SERVER2_URL; // URL server chứa chi nhánh 1
             case 2:
                 return DistributedDatabaseConnection.SERVER3_URL; // URL server chứa chi nhánh 2
-            case 3:
-                return DistributedDatabaseConnection.SERVER4_URL; // URL server chứa chi nhánh 3
+           // case 3:
+               // return DistributedDatabaseConnection.SERVER4_URL; // URL server chứa chi nhánh 3
             default:
                 throw new IllegalArgumentException("Chi nhánh không hợp lệ: " + maChiNhanh);
         }

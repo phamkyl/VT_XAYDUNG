@@ -28,6 +28,8 @@ public class MainView extends JFrame {
 
     }
 
+
+
     // Method to initialize the GUI
     private void initialize() {
         setTitle("Giao Diện Chính"); // Set window title
@@ -47,7 +49,7 @@ public class MainView extends JFrame {
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
         JLabel imageLabel = new JLabel(resizedIcon); // Create label for the image
 
-        // Welcome label with user info
+        // Welcome to label with user info
         JLabel welcomeLabel = new JLabel("Chào " + userName + " (" + userRole + ")");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Font style
         welcomeLabel.setForeground(new Color(0, 102, 204)); // Set text color
@@ -96,13 +98,13 @@ public class MainView extends JFrame {
 
         if (userRole != null) {
             switch (userRole) {
-                case "Admin":
+                case "admin":
                     addAdminOptions(model); // Admin options
                     break;
                 case "Quản lý":
                     addManagerOptions(model); // Manager options
                     break;
-                case "User":
+                case "employee":
                     addEmployeeOptions(model); // Employee options
                     break;
                 default:
@@ -140,8 +142,13 @@ public class MainView extends JFrame {
 
     // Add options for Employee
     private void addEmployeeOptions(DefaultTableModel model) {
-        model.addRow(new Object[]{"Xem thông tin cá nhân"});
-        model.addRow(new Object[]{"Xem báo cáo"});
+        model.addRow(new Object[]{"Xem danh sách nhân viên (cả hai chi nhánh)"});
+        model.addRow(new Object[]{"Quản lý kho"});
+        model.addRow(new Object[]{"Quản lý vật tư"});
+        model.addRow(new Object[]{"Danh sách nhà cung cấp"});
+        model.addRow(new Object[]{"Danh sách khách hàng"});
+        model.addRow(new Object[]{"Danh sách đơn hàng"});
+        model.addRow(new Object[]{"Báo cáo - thống kê"});
     }
 
     // Handle selection of options
