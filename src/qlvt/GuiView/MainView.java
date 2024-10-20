@@ -3,18 +3,15 @@ package qlvt.GuiView;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainView extends JFrame {
     private String userRole;
     private String userName;
     private int maChiNhanh; // Store branch ID
     private JPanel panel;
-    private JTable optionsTable;
 
     // Constructor to initialize MainView with user details
     public MainView(String userRole, String userName, int maChiNhanh) {
@@ -24,16 +21,10 @@ public class MainView extends JFrame {
         initialize(); // Call initialization method
     }
 
-    public MainView() {
-
-    }
-
-
-
     // Method to initialize the GUI
     private void initialize() {
         setTitle("Giao Diện Chính"); // Set window title
-        setSize(400, 400); // Set window size
+        setSize(800, 600); // Set window size
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
         setResizable(false); // Disable resizing
@@ -49,10 +40,10 @@ public class MainView extends JFrame {
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
         JLabel imageLabel = new JLabel(resizedIcon); // Create label for the image
 
-        // Welcome to label with user info
+        // Welcome label with user info
         JLabel welcomeLabel = new JLabel("Chào " + userName + " (" + userRole + ")");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Font style
-        welcomeLabel.setForeground(new Color(0, 102, 204)); // Set text color
+        welcomeLabel.setForeground(new Color(3, 166, 120)); // Set text color
         welcomeLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding
 
         // Create a panel to hold the image and welcome label
@@ -64,48 +55,62 @@ public class MainView extends JFrame {
         // Add userInfoPanel to the main panel
         panel.add(userInfoPanel, BorderLayout.NORTH);
 
-
-        // Create options table
-        String[] columnNames = {"Tùy Chọn"};
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-        optionsTable = new JTable(model);
-        optionsTable.setFillsViewportHeight(true);
-        optionsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Single selection mode
-        optionsTable.setRowHeight(30); // Set row height for better appearance
+        // Create options panel
+        JPanel optionsPanel = new JPanel(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns with 10px spacing
+        optionsPanel.setBackground(Color.WHITE);
+        optionsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add padding
 
         // Add options based on user role
-        showOptions(model); // Populate table with role-specific options
+        showOptions(optionsPanel);
 
-        JScrollPane scrollPane = new JScrollPane(optionsTable);
-        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(optionsPanel, BorderLayout.CENTER);
 
-        // Add event listener for option selection
-        optionsTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int selectedRow = optionsTable.getSelectedRow();
-                if (selectedRow != -1) {
-                    String selectedOption = (String) optionsTable.getValueAt(selectedRow, 0);
-                    handleOptionSelection(selectedOption); // Handle selected option
-                }
-            }
-        });
+
+        // Add a new panel for personal information
+        JPanel personalInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        personalInfoPanel.setBackground(Color.WHITE);
+        personalInfoPanel.setBorder(BorderFactory.createTitledBorder("Thông tin cá nhân"));
+
+// Create a table model to hold the personal information
+        DefaultTableModel personalInfoModel = new DefaultTableModel(new Object[]{"Thông tin", "Giá trị"}, 0);
+
+// Add the user's personal information to the table model
+        personalInfoModel.addRow(new Object[]{"Tên", userName});
+        personalInfoModel.addRow(new Object[]{"Vai trò", userRole});
+        personalInfoModel.addRow(new Object[]{"Chi nhánh", String.valueOf(maChiNhanh)});
+
+// Create a JTable to display the personal information
+        JTable personalInfoTable = new JTable(personalInfoModel);
+        personalInfoTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        personalInfoTable.setRowHeight(30);
+        personalInfoTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+        personalInfoTable.getColumnModel().getColumn(1).setPreferredWidth(600);
+        personalInfoTable.setBackground(Color.WHITE);
+        personalInfoTable.setFillsViewportHeight(true);
+
+// Add the table to a scroll pane
+        JScrollPane personalInfoScrollPane = new JScrollPane(personalInfoTable);
+        personalInfoScrollPane.setPreferredSize(new Dimension(800, 150));
+
+// Add the scroll pane to the personalInfoPanel
+        personalInfoPanel.add(personalInfoScrollPane);
+
+// Add the personalInfoPanel to the main panel
+        panel.add(personalInfoPanel, BorderLayout.SOUTH);
     }
 
-    // Method to display options based on user role
-    public void showOptions(DefaultTableModel model) {
-        model.setRowCount(0); // Clear current rows before adding new ones
-
+    // Add options based on user role
+    public void showOptions(JPanel optionsPanel) {
         if (userRole != null) {
             switch (userRole) {
                 case "admin":
-                    addAdminOptions(model); // Admin options
+                    addAdminOptions(optionsPanel);
                     break;
                 case "Quản lý":
-                    addManagerOptions(model); // Manager options
+                    //addManagerOptions(optionsPanel);
                     break;
                 case "employee":
-                    addEmployeeOptions(model); // Employee options
+                    addEmployeeOptions(optionsPanel);
                     break;
                 default:
                     JOptionPane.showMessageDialog(this, "Vai trò không hợp lệ.");
@@ -117,63 +122,60 @@ public class MainView extends JFrame {
     }
 
     // Add options for Admin
-    private void addAdminOptions(DefaultTableModel model) {
-        model.addRow(new Object[]{"Quản lý nhân viên"});
-        model.addRow(new Object[]{"Quản lý chi nhánh"});
-        model.addRow(new Object[]{"Quản lý kho"});
-        model.addRow(new Object[]{"Quản lý vật tư"});
-        model.addRow(new Object[]{"Danh sách nhà cung cấp"});
-        model.addRow(new Object[]{"Danh sách khách hàng"});
-        model.addRow(new Object[]{"Danh sách đơn hàng"});
-        model.addRow(new Object[]{"Báo cáo - thống kê"});
+    private void addAdminOptions(JPanel optionsPanel) {
+        addButton(optionsPanel, "Quản lý nhân viên", "image/team.png", this::openEmployeeManagementView);
+        addButton(optionsPanel, "Quản lý chi nhánh", "image/organization.png", this::openBranchManagementView);
+        addButton(optionsPanel, "Quản lý kho", "image/warehouse.png", this::openKhoManagementView);
+        addButton(optionsPanel, "Quản lý vật tư", "image/supplies.png", this::openMaterialManagementView);
+        addButton(optionsPanel, "Danh sách nhà cung cấp", "image/manufacture.png", this::openSupplierManagementView);
+        addButton(optionsPanel, "Danh sách khách hàng", "image/customer-loyalty.png", this::openCustomerManagementView);
+        addButton(optionsPanel, "Danh sách đơn hàng", "image/cargo.png", this::openOrderManagementView);
+        addButton(optionsPanel, "Báo cáo - thống kê", "image/report.png", this::viewReports);
     }
 
     // Add options for Manager
-    private void addManagerOptions(DefaultTableModel model) {
-        model.addRow(new Object[]{"Quản lý nhân viên (chi nhánh của mình)"});
-        model.addRow(new Object[]{"Xem danh sách nhân viên (cả hai chi nhánh)"});
-        model.addRow(new Object[]{"Quản lý kho"});
-        model.addRow(new Object[]{"Quản lý vật tư"});
-        model.addRow(new Object[]{"Danh sách nhà cung cấp"});
-        model.addRow(new Object[]{"Danh sách khách hàng"});
-        model.addRow(new Object[]{"Danh sách đơn hàng"});
-        model.addRow(new Object[]{"Báo cáo - thống kê"});
+   /* private void addManagerOptions(JPanel optionsPanel) {
+        addButton(optionsPanel, "Quản lý nhân viên (chi nhánh của mình)", this::manageEmployeesInBranch);
+        addButton(optionsPanel, "Xem danh sách nhân viên (cả hai chi nhánh)", this::viewAllEmployees);
+        addButton(optionsPanel, "Quản lý kho", this::openKhoManagementView);
+        addButton(optionsPanel, "Quản lý vật tư", this::openMaterialManagementView);
+        addButton(optionsPanel, "Danh sách nhà cung cấp", this::openSupplierManagementView);
+        addButton(optionsPanel, "Danh sách khách hàng", this::openCustomerManagementView);
+        addButton(optionsPanel, "Danh sách đơn hàng", this::openOrderManagementView);
+        addButton(optionsPanel, "Báo cáo - thống kê", this::viewReports);
     }
+
+    */
 
     // Add options for Employee
-    private void addEmployeeOptions(DefaultTableModel model) {
-        model.addRow(new Object[]{"Xem danh sách nhân viên (cả hai chi nhánh)"});
-        model.addRow(new Object[]{"Quản lý kho"});
-        model.addRow(new Object[]{"Quản lý vật tư"});
-        model.addRow(new Object[]{"Danh sách nhà cung cấp"});
-        model.addRow(new Object[]{"Danh sách khách hàng"});
-        model.addRow(new Object[]{"Danh sách đơn hàng"});
-        model.addRow(new Object[]{"Báo cáo - thống kê"});
+    private void addEmployeeOptions(JPanel optionsPanel) {
+        //addButton(optionsPanel, "Quản lý nhân viên", "image/team.png", this::openEmployeeManagementView);
+        //addButton(optionsPanel, "Quản lý chi nhánh", "image/organization.png", this::openBranchManagementView);
+        addButton(optionsPanel, "Quản lý kho", "image/warehouse.png", this::openKhoManagementView);
+        addButton(optionsPanel, "Quản lý vật tư", "image/supplies.png", this::openMaterialManagementView);
+        addButton(optionsPanel, "Danh sách nhà cung cấp", "image/manufacture.png", this::openSupplierManagementView);
+        addButton(optionsPanel, "Danh sách khách hàng", "image/customer-loyalty.png", this::openCustomerManagementView);
+        addButton(optionsPanel, "Danh sách đơn hàng", "image/cargo.png", this::openOrderManagementView);
+        addButton(optionsPanel, "Báo cáo - thống kê", "image/report.png", this::viewReports);
     }
 
-    // Handle selection of options
-    private void handleOptionSelection(String selectedOption) {
-        Map<String, Runnable> optionActions = new HashMap<>();
-        optionActions.put("Quản lý nhân viên", this::openEmployeeManagementView);
-        optionActions.put("Quản lý chi nhánh", this::openBranchManagementView);
-        optionActions.put("Quản lý kho", this::openKhoManagementView);
-        optionActions.put("Quản lý vật tư", this::openMaterialManagementView);
-        optionActions.put("Danh sách nhà cung cấp", this::openSupplierManagementView);
-        optionActions.put("Danh sách khách hàng", this::openCustomerManagementView);
-        optionActions.put("Danh sách đơn hàng", this::openOrderManagementView);
-        optionActions.put("Báo cáo - thống kê", this::viewReports);
-        optionActions.put("Quản lý nhân viên (chi nhánh của mình)", this::manageEmployeesInBranch);
-        optionActions.put("Xem danh sách nhân viên (cả hai chi nhánh)", this::viewAllEmployees);
-        optionActions.put("Xem thông tin cá nhân", this::viewPersonalInfo);
+    // Helper method to add a button to the options panel
+    private void addButton(JPanel optionsPanel, String buttonText, String iconFilePath, Runnable action) {
+        // Load and scale the icon image
+        ImageIcon originalIcon = new ImageIcon(iconFilePath);
+        Image scaledImage = originalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH); // Kích thước mới
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
 
-        Runnable action = optionActions.get(selectedOption);
-        if (action != null) {
-            action.run(); // Run the selected action
-        } else {
-            JOptionPane.showMessageDialog(this, "Tùy chọn không hợp lệ.");
-        }
+        // Create the button with the icon and text
+        JButton button = new JButton(buttonText, scaledIcon);
+        button.setFont(new Font("Arial", Font.PLAIN, 16));
+        button.setBackground(new Color(3, 166, 120));
+        button.setForeground(Color.WHITE);
+        button.setHorizontalTextPosition(JButton.RIGHT);
+        button.setVerticalTextPosition(JButton.CENTER);
+        button.addActionListener(e -> action.run());
+        optionsPanel.add(button);
     }
-
     // Methods for each option (these would open different views or perform actions)
 
     private void openEmployeeManagementView() {
@@ -186,14 +188,14 @@ public class MainView extends JFrame {
         branchManagementView.setVisible(true);
     }
 
-    private void openKhoManagementView()  {
-        WarehouseManagementView warehouseManagementView = null;
+    private void openKhoManagementView() {
         try {
-            warehouseManagementView = new WarehouseManagementView(this,maChiNhanh);
+            WarehouseManagementView warehouseManagementView = new WarehouseManagementView(this, maChiNhanh);
+            warehouseManagementView.setVisible(true);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi mở quản lý kho: " + e.getMessage());
         }
-        warehouseManagementView.setVisible(true);
     }
 
     private void openMaterialManagementView() {

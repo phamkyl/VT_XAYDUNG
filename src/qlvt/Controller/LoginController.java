@@ -34,14 +34,16 @@ public class LoginController {
                 // Switch to main view based on role
                 SwingUtilities.invokeLater(() -> {
                     MainView mainView;
+                    JPanel optionsPanel = new JPanel(); // Create a new JPanel for options
+
                     switch (phanQuyen) {
-                        case "admin": // quản lí 2 chi nhánh -- all( có tất cả các quyền)
+                        case "admin": // quản lý 2 chi nhánh
                             mainView = new MainView("admin", employee.getHoTen(), maChiNhanh);
                             break;
-                        case "Quản lý": // quản lí 1 chi nhánh - xem danh sách chi nhánh, nhân viên - danh sách chung ( được quyền xem) -danh sách của chi nhánh đang quản lí
+                        case "Quản lý": // quản lý 1 chi nhánh
                             mainView = new MainView("Quản lý", employee.getHoTen(), maChiNhanh);
                             break;
-                        case "employee": // nhân viên 1 chi nhánh  - xem
+                        case "employee": // nhân viên 1 chi nhánh
                             mainView = new MainView("employee", employee.getHoTen(), maChiNhanh);
                             break;
                         default:
@@ -49,10 +51,11 @@ public class LoginController {
                             return; // Do not switch to main view
                     }
 
-                    mainView.showOptions(new DefaultTableModel()); // Update options for each role
+                    mainView.showOptions(optionsPanel); // Update options for each role
                     mainView.setVisible(true); // Show the main view
                     loginView.dispose(); // Close the login form
                 });
+
             } else {
                 loginView.showError("Sai mã nhân viên, mật khẩu hoặc mã chi nhánh!");
             }
