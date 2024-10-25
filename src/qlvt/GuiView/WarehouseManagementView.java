@@ -115,8 +115,10 @@ public class WarehouseManagementView extends JDialog {
         if (selectedRow != -1) {
             int maKho = (int) model.getValueAt(selectedRow, 0);
             try {
-                warehouseDAO.deleteWarehouse(maKho);
-                model.removeRow(selectedRow);
+                // Gọi phương thức xóa kho với maKho và maChiNhanh
+                warehouseDAO.deleteWarehouse(maKho, maChiNhanh);
+                model.removeRow(selectedRow); // Xóa hàng khỏi JTable
+                JOptionPane.showMessageDialog(this, "Xóa kho thành công.");
             } catch (SQLException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
@@ -125,6 +127,7 @@ public class WarehouseManagementView extends JDialog {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một kho để xóa.");
         }
     }
+
 
     private void openMainView() {
         String userRole = "Admin"; // Example role

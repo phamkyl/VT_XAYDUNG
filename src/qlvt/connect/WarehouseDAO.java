@@ -77,22 +77,37 @@ public class WarehouseDAO {
 
     // Thêm kho mới
     public void addWarehouse(Warehouse warehouse) throws SQLException {
-        String query = "INSERT INTO Kho (MaKho, TenKho, DiaChi, MaChiNhanh) VALUES (?, ?, ?, ?)";
-        String serverURL = getServerURLByBranch(warehouse.getMaChiNhanh()); // Lấy URL server dựa trên mã chi nhánh
+        String queryCheck = "SELECT COUNT(*) FROM Kho WHERE MaKho = ?";
+        String queryInsert = "INSERT INTO Kho (MaKho, TenKho, DiaChi, MaChiNhanh) VALUES (?, ?, ?, ?)";
+        String serverURL = getServerURLByBranch(warehouse.getMaChiNhanh());
 
         try (Connection connection = dbConnection.connectToServer(serverURL);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement checkStatement = connection.prepareStatement(queryCheck)) {
 
-            preparedStatement.setInt(1, warehouse.getMaKho());
-            preparedStatement.setString(2, warehouse.getTenKho());
-            preparedStatement.setString(3, warehouse.getDiaChi());
-            preparedStatement.setInt(4, warehouse.getMaChiNhanh());
-            preparedStatement.executeUpdate(); // Thực hiện thêm mới
+            // Kiểm tra xem MaKho đã tồn tại chưa
+            checkStatement.setInt(1, warehouse.getMaKho());
+            ResultSet resultSet = checkStatement.executeQuery();
+
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
+                System.err.println("Kho với MaKho " + warehouse.getMaKho() + " đã tồn tại.");
+                return; // Bỏ qua chèn nếu MaKho đã tồn tại
+            }
+
+            // Tiếp tục chèn nếu MaKho là duy nhất
+            try (PreparedStatement insertStatement = connection.prepareStatement(queryInsert)) {
+                insertStatement.setInt(1, warehouse.getMaKho());
+                insertStatement.setString(2, warehouse.getTenKho());
+                insertStatement.setString(3, warehouse.getDiaChi());
+                insertStatement.setInt(4, warehouse.getMaChiNhanh());
+                insertStatement.executeUpdate();
+            }
+
         } catch (SQLException e) {
             System.err.println("Lỗi khi thêm kho: " + e.getMessage());
             throw e;
         }
     }
+
 
     // Cập nhật thông tin kho
     public void updateWarehouse(Warehouse warehouse) throws SQLException {
@@ -114,20 +129,28 @@ public class WarehouseDAO {
     }
 
     // Xóa kho
-    public void deleteWarehouse(int maKho) throws SQLException {
+    public void deleteWarehouse(int maKho, int maChiNhanh) throws SQLException {
         String query = "DELETE FROM Kho WHERE MaKho = ?";
-        String serverURL = getServerURLByBranch(maKho); // Lấy URL server dựa trên mã chi nhánh
+        String serverURL = getServerURLByBranch(maChiNhanh); // Lấy URL server dựa trên mã chi nhánh
 
         try (Connection connection = dbConnection.connectToServer(serverURL);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, maKho);
-            preparedStatement.executeUpdate(); // Thực hiện xóa
+            int rowsAffected = preparedStatement.executeUpdate(); // Thực hiện xóa
+
+            if (rowsAffected > 0) {
+                System.out.println("Xóa kho thành công.");
+            } else {
+                System.out.println("Không tìm thấy kho với mã: " + maKho);
+            }
         } catch (SQLException e) {
             System.err.println("Lỗi khi xóa kho: " + e.getMessage());
             throw e;
         }
     }
+
+
 
     // Lấy URL của server dựa trên mã chi nhánh
     private String getServerURLByBranch(int maChiNhanh) {

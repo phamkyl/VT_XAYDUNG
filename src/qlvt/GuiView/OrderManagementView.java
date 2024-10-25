@@ -48,7 +48,7 @@ public class OrderManagementView extends JDialog {
 
         // Action cho nút Thêm
         addButton.addActionListener(e -> {
-            if (userRole.equals("Quản trị viên")) {
+            if (userRole.equals("admin")) {
                 String maDonHangStr = JOptionPane.showInputDialog("Nhập Mã Đơn Hàng:");
                 String maKhachHangStr = JOptionPane.showInputDialog("Nhập Mã Khách Hàng:");
                 String ngayDatStr = JOptionPane.showInputDialog("Nhập Ngày Đặt (yyyy-MM-dd):");
@@ -73,7 +73,7 @@ public class OrderManagementView extends JDialog {
 
         // Action cho nút Sửa
         editButton.addActionListener(e -> {
-            if (userRole.equals("Quản trị viên")) {
+            if (userRole.equals("admin")) {
                 int selectedRow = orderTable.getSelectedRow();
                 if (selectedRow != -1) {
                     int maDonHang = (int) model.getValueAt(selectedRow, 0);
@@ -102,7 +102,7 @@ public class OrderManagementView extends JDialog {
 
         // Action cho nút Xóa
         deleteButton.addActionListener(e -> {
-            if (userRole.equals("Quản trị viên")) {
+            if (userRole.equals("admin")) {
                 int selectedRow = orderTable.getSelectedRow();
                 if (selectedRow != -1) {
                     int maDonHang = (int) model.getValueAt(selectedRow, 0);

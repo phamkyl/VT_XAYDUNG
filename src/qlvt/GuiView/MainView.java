@@ -156,8 +156,12 @@ public class MainView extends JFrame {
         addButton(optionsPanel, "Danh sách nhà cung cấp", "image/manufacture.png", this::openSupplierManagementView);
         addButton(optionsPanel, "Danh sách khách hàng", "image/customer-loyalty.png", this::openCustomerManagementView);
         addButton(optionsPanel, "Danh sách đơn hàng", "image/cargo.png", this::openOrderManagementView);
+        addButton(optionsPanel, "Quản lý Phiếu Nhập và Xuất", "image/export.png", this::openExportManagementView);
         addButton(optionsPanel, "Báo cáo - thống kê", "image/report.png", this::viewReports);
+
     }
+
+
 
     // Helper method to add a button to the options panel
     private void addButton(JPanel optionsPanel, String buttonText, String iconFilePath, Runnable action) {
@@ -218,15 +222,21 @@ public class MainView extends JFrame {
         orderManagementView.setVisible(true);
     }
 
+    private void openExportManagementView() {
+
+    }
+
     private void viewReports() {
         JOptionPane.showMessageDialog(this, "Xem báo cáo được chọn.");
     }
 
-    private void manageEmployeesInBranch() {
+    private void manageEmployeesInBranch()
+    {
         JOptionPane.showMessageDialog(this, "Quản lý nhân viên trong chi nhánh của mình được chọn.");
     }
 
-    private void viewAllEmployees() {
+    private void viewAllEmployees()
+    {
         JOptionPane.showMessageDialog(this, "Danh sách nhân viên của cả hai chi nhánh được chọn.");
     }
 
