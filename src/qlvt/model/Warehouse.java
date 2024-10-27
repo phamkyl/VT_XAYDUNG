@@ -13,6 +13,13 @@ public class Warehouse {
         this.maChiNhanh = maChiNhanh;
     }
 
+    public Warehouse(int maKho, String tenKho) {
+        this.maKho = maKho;
+        this.tenKho = tenKho;
+    }
+
+
+
     // Getters and setters
     public int getMaKho() {
         return maKho;
@@ -44,5 +51,10 @@ public class Warehouse {
 
     public void setMaChiNhanh(int maChiNhanh) {
         this.maChiNhanh = maChiNhanh;
+    }
+
+    @Override
+    public String toString() {
+        return tenKho ;
     }
 }

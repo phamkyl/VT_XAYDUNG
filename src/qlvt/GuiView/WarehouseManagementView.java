@@ -14,7 +14,9 @@ public class WarehouseManagementView extends JDialog {
     private WarehouseDAO warehouseDAO;
     private int maChiNhanh; // Branch ID
 
-    public WarehouseManagementView(JFrame parent, int maChiNhanh) throws SQLException {
+
+
+    public WarehouseManagementView(JFrame parent, int maChiNhanh,String userRole) throws SQLException {
         super(parent, "Quản Lý Kho", true);
         setSize(600, 450);
         setLocationRelativeTo(parent);
@@ -39,112 +41,128 @@ public class WarehouseManagementView extends JDialog {
         JButton exitButton = new JButton("Thoát");
         JButton backButton = new JButton("Quay Lại");
 
-        buttonPanel.add(addButton);
-        buttonPanel.add(editButton);
-        buttonPanel.add(deleteButton);
-        buttonPanel.add(backButton);
-        buttonPanel.add(exitButton);
-        panel.add(buttonPanel, BorderLayout.SOUTH);
+        // role admin ( theo chi nhánh quản lý - xem , them , sưa , xoa)
+        // role employee ( chi duoc xem danh sach kho)
 
-        // Add action
-        addButton.addActionListener(e -> addWarehouse());
-
-        // Edit action
-        editButton.addActionListener(e -> editWarehouse(warehouseTable));
-
-        // Delete action
-        deleteButton.addActionListener(e -> deleteWarehouse(warehouseTable));
-
-        // Exit action
-        exitButton.addActionListener(e -> System.exit(0));
-
-        // Back action
-        backButton.addActionListener(e -> {
-            this.dispose();
-            openMainView();
-        });
-
-        loadWarehouses();
-        setContentPane(panel);
-    }
-
-    private void addWarehouse() {
-        // Input warehouse info
-        String maKhoStr = JOptionPane.showInputDialog("Nhập Mã Kho:");
-        String tenKho = JOptionPane.showInputDialog("Nhập Tên Kho:");
-        String diaChi = JOptionPane.showInputDialog("Nhập Địa Chỉ:");
-
-        if (maKhoStr != null && tenKho != null && diaChi != null) {
-            try {
-                int maKho = Integer.parseInt(maKhoStr);
-                Warehouse newWarehouse = new Warehouse(maKho, tenKho, diaChi, maChiNhanh);
-                warehouseDAO.addWarehouse(newWarehouse);
-                model.addRow(new Object[]{maKho, tenKho, diaChi, maChiNhanh});
-            } catch (NumberFormatException | SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
-            }
+        if (userRole.equals("admin") ) {
+            buttonPanel.add(addButton);
+            buttonPanel.add(editButton);
+            buttonPanel.add(deleteButton);
         }
-    }
+            buttonPanel.add(backButton);
+            buttonPanel.add(exitButton);
+            panel.add(buttonPanel, BorderLayout.SOUTH);
+        if (userRole.equals("admin") )
+            {
+            // Add action
+            addButton.addActionListener(e -> addWarehouse());
 
-    private void editWarehouse(JTable warehouseTable) {
-        int selectedRow = warehouseTable.getSelectedRow();
-        if (selectedRow != -1) {
-            int maKho = (int) model.getValueAt(selectedRow, 0);
-            String tenKho = JOptionPane.showInputDialog("Nhập Tên Kho:", model.getValueAt(selectedRow, 1));
-            String diaChi = JOptionPane.showInputDialog("Nhập Địa Chỉ:", model.getValueAt(selectedRow, 2));
+            // Edit action
+            editButton.addActionListener(e -> editWarehouse(warehouseTable));
 
-            if (tenKho != null && diaChi != null) {
+            // Delete action
+            deleteButton.addActionListener(e -> deleteWarehouse(warehouseTable));
+            } else
+            {
+                // Disable buttons for other roles
+                addButton.setEnabled(false);
+                editButton.setEnabled(false);
+                deleteButton.setEnabled(false);
+            }
+            // Exit action
+            exitButton.addActionListener(e -> System.exit(0));
+
+            // Back action
+            backButton.addActionListener(e -> {
+                this.dispose();
+               /* openMainView();
+
+                */
+            });
+
+            loadWarehouses();
+            setContentPane(panel);
+        }
+
+        private void addWarehouse () {
+            // Input warehouse info
+            String maKhoStr = JOptionPane.showInputDialog("Nhập Mã Kho:");
+            String tenKho = JOptionPane.showInputDialog("Nhập Tên Kho:");
+            String diaChi = JOptionPane.showInputDialog("Nhập Địa Chỉ:");
+
+            if (maKhoStr != null && tenKho != null && diaChi != null) {
                 try {
-                    Warehouse updatedWarehouse = new Warehouse(maKho, tenKho, diaChi, maChiNhanh);
-                    warehouseDAO.updateWarehouse(updatedWarehouse);
-                    model.setValueAt(tenKho, selectedRow, 1);
-                    model.setValueAt(diaChi, selectedRow, 2);
-                } catch (SQLException ex) {
+                    int maKho = Integer.parseInt(maKhoStr);
+                    Warehouse newWarehouse = new Warehouse(maKho, tenKho, diaChi, maChiNhanh);
+                    warehouseDAO.addWarehouse(newWarehouse);
+                    model.addRow(new Object[]{maKho, tenKho, diaChi, maChiNhanh});
+                } catch (NumberFormatException | SQLException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
                 }
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một kho để sửa.");
         }
-    }
 
-    private void deleteWarehouse(JTable warehouseTable) {
-        int selectedRow = warehouseTable.getSelectedRow();
-        if (selectedRow != -1) {
-            int maKho = (int) model.getValueAt(selectedRow, 0);
-            try {
-                // Gọi phương thức xóa kho với maKho và maChiNhanh
-                warehouseDAO.deleteWarehouse(maKho, maChiNhanh);
-                model.removeRow(selectedRow); // Xóa hàng khỏi JTable
-                JOptionPane.showMessageDialog(this, "Xóa kho thành công.");
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
+        private void editWarehouse (JTable warehouseTable){
+            int selectedRow = warehouseTable.getSelectedRow();
+            if (selectedRow != -1) {
+                int maKho = (int) model.getValueAt(selectedRow, 0);
+                String tenKho = JOptionPane.showInputDialog("Nhập Tên Kho:", model.getValueAt(selectedRow, 1));
+                String diaChi = JOptionPane.showInputDialog("Nhập Địa Chỉ:", model.getValueAt(selectedRow, 2));
+
+                if (tenKho != null && diaChi != null) {
+                    try {
+                        Warehouse updatedWarehouse = new Warehouse(maKho, tenKho, diaChi, maChiNhanh);
+                        warehouseDAO.updateWarehouse(updatedWarehouse);
+                        model.setValueAt(tenKho, selectedRow, 1);
+                        model.setValueAt(diaChi, selectedRow, 2);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một kho để sửa.");
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một kho để xóa.");
+        }
+
+        private void deleteWarehouse (JTable warehouseTable){
+            int selectedRow = warehouseTable.getSelectedRow();
+            if (selectedRow != -1) {
+                int maKho = (int) model.getValueAt(selectedRow, 0);
+                try {
+                    // Gọi phương thức xóa kho với maKho và maChiNhanh
+                    warehouseDAO.deleteWarehouse(maKho, maChiNhanh);
+                    model.removeRow(selectedRow); // Xóa hàng khỏi JTable
+                    JOptionPane.showMessageDialog(this, "Xóa kho thành công.");
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một kho để xóa.");
+            }
+        }
+
+
+      /* private void openMainView () {
+            userRole = "Admin";
+            String userName = "User"; // Example user
+            MainView mainView = new MainView(userRole, userName, maChiNhanh); // Open the main view with parameters
+            mainView.setVisible(true);
+        }
+
+       */
+
+        private void loadWarehouses () throws SQLException {
+            List<Warehouse> warehouses = warehouseDAO.getWarehousesByBranch(maChiNhanh);
+            for (Warehouse warehouse : warehouses) {
+                model.addRow(new Object[]{
+                        warehouse.getMaKho(),
+                        warehouse.getTenKho(),
+                        warehouse.getDiaChi(),
+                        warehouse.getMaChiNhanh()
+                });
+            }
         }
     }
-
-
-    private void openMainView() {
-        String userRole = "Admin"; // Example role
-        String userName = "User"; // Example user
-        MainView mainView = new MainView(userRole, userName, maChiNhanh); // Open the main view with parameters
-        mainView.setVisible(true);
-    }
-
-    private void loadWarehouses() throws SQLException {
-        List<Warehouse> warehouses = warehouseDAO.getWarehousesByBranch(maChiNhanh);
-        for (Warehouse warehouse : warehouses) {
-            model.addRow(new Object[]{
-                    warehouse.getMaKho(),
-                    warehouse.getTenKho(),
-                    warehouse.getDiaChi(),
-                    warehouse.getMaChiNhanh()
-            });
-        }
-    }
-}

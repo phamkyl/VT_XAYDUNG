@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 public class LoginController {
     private final EmployeeDAO employeeDAO;
     private final LoginView loginView;
+    private static Employee currentEmployee;
 
     public LoginController(LoginView view) {
         this.employeeDAO = new EmployeeDAO();
@@ -40,8 +41,8 @@ public class LoginController {
                         case "admin": // quản lý 2 chi nhánh
                             mainView = new MainView("admin", employee.getHoTen(), maChiNhanh);
                             break;
-                        case "Quản lý": // quản lý 1 chi nhánh
-                            mainView = new MainView("Quản lý", employee.getHoTen(), maChiNhanh);
+                        case "ADMIN0": // quản lý 1 chi nhánh
+                            mainView = new MainView("ADMIN0", employee.getHoTen(), maChiNhanh);
                             break;
                         case "employee": // nhân viên 1 chi nhánh
                             mainView = new MainView("employee", employee.getHoTen(), maChiNhanh);
@@ -65,5 +66,9 @@ public class LoginController {
             e.printStackTrace();
             loginView.showError("Lỗi khi đăng nhập: " + e.getMessage());
         }
+    }
+
+    public static Employee getCurrentEmployee() {
+        return currentEmployee; // Phương thức lấy nhân viên hiện tại
     }
 }

@@ -17,6 +17,11 @@ public class Material {
         this.maNhaCungCap = maNhaCungCap;
     }
 
+    public Material(int maVatTu, String tenVatTu) {
+        this.maVatTu = maVatTu;
+        this.tenVatTu = tenVatTu;
+    }
+
     public int getMaVatTu() {
         return maVatTu;
     }
@@ -67,13 +72,6 @@ public class Material {
 
     @Override
     public String toString() {
-        return "Material{" +
-                "maVatTu=" + maVatTu +
-                ", tenVatTu='" + tenVatTu + '\'' +
-                ", moTa='" + moTa + '\'' +
-                ", donViTinh='" + donViTinh + '\'' +
-                ", gia=" + gia +
-                ", maNhaCungCap=" + maNhaCungCap +
-                '}';
+        return tenVatTu;
     }
 }

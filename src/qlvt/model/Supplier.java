@@ -15,6 +15,11 @@ public class Supplier {
         this.email = email;
     }
 
+    public Supplier(int maNhaCungCap, String tenNhaCungCap) {
+        this.maNhaCungCap = maNhaCungCap;
+        this.tenNhaCungCap = tenNhaCungCap;
+    }
+
     public int getMaNhaCungCap() {
         return maNhaCungCap;
     }
@@ -58,12 +63,6 @@ public class Supplier {
 
     @Override
     public String toString() {
-        return "Supplier{" +
-                "maNhaCungCap=" + maNhaCungCap +
-                ", tenNhaCungCap='" + tenNhaCungCap + '\'' +
-                ", diaChi='" + diaChi + '\'' +
-                ", soDienThoai='" + soDienThoai + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return tenNhaCungCap;
     }
 }

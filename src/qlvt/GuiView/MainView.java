@@ -1,11 +1,17 @@
 package qlvt.GuiView;
 
+import qlvt.Controller.LoginController;
+import qlvt.connect.PurchaseOrderDAO;
+import qlvt.model.Employee;
+import qlvt.model.PhieuNhap;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.List;
 
 public class MainView extends JFrame {
     private String userRole;
@@ -19,7 +25,11 @@ public class MainView extends JFrame {
         this.userName = userName;
         this.maChiNhanh = maChiNhanh; // Assign branch ID
         initialize(); // Call initialization method
+
+
     }
+
+
 
     // Method to initialize the GUI
     private void initialize() {
@@ -106,8 +116,8 @@ public class MainView extends JFrame {
                 case "admin":
                     addAdminOptions(optionsPanel);
                     break;
-                case "Quản lý":
-                    //addManagerOptions(optionsPanel);
+                case "ADMIN0":
+                    addManagerOptions(optionsPanel);
                     break;
                 case "employee":
                     addEmployeeOptions(optionsPanel);
@@ -121,7 +131,7 @@ public class MainView extends JFrame {
         }
     }
 
-    // Add options for Admin
+    // Add options for Quản lý - Admin
     private void addAdminOptions(JPanel optionsPanel) {
         addButton(optionsPanel, "Quản lý nhân viên", "image/team.png", this::openEmployeeManagementView);
         addButton(optionsPanel, "Quản lý chi nhánh", "image/organization.png", this::openBranchManagementView);
@@ -133,19 +143,19 @@ public class MainView extends JFrame {
         addButton(optionsPanel, "Báo cáo - thống kê", "image/report.png", this::viewReports);
     }
 
-    // Add options for Manager
-   /* private void addManagerOptions(JPanel optionsPanel) {
-        addButton(optionsPanel, "Quản lý nhân viên (chi nhánh của mình)", this::manageEmployeesInBranch);
-        addButton(optionsPanel, "Xem danh sách nhân viên (cả hai chi nhánh)", this::viewAllEmployees);
-        addButton(optionsPanel, "Quản lý kho", this::openKhoManagementView);
-        addButton(optionsPanel, "Quản lý vật tư", this::openMaterialManagementView);
-        addButton(optionsPanel, "Danh sách nhà cung cấp", this::openSupplierManagementView);
-        addButton(optionsPanel, "Danh sách khách hàng", this::openCustomerManagementView);
-        addButton(optionsPanel, "Danh sách đơn hàng", this::openOrderManagementView);
-        addButton(optionsPanel, "Báo cáo - thống kê", this::viewReports);
+    // Add options for Quản trị viên
+    private void addManagerOptions(JPanel optionsPanel) {
+        addButton(optionsPanel, "Quản lý nhân viên", "image/team.png", this::openEmployeeManagementView);
+        addButton(optionsPanel, "Quản lý chi nhánh", "image/organization.png", this::openBranchManagementView);
+        addButton(optionsPanel, "Quản lý kho", "image/warehouse.png", this::openKhoManagementView);
+        addButton(optionsPanel, "Quản lý vật tư", "image/supplies.png", this::openMaterialManagementView);
+        addButton(optionsPanel, "Danh sách nhà cung cấp", "image/manufacture.png", this::openSupplierManagementView);
+        addButton(optionsPanel, "Danh sách khách hàng", "image/customer-loyalty.png", this::openCustomerManagementView);
+        addButton(optionsPanel, "Danh sách đơn hàng", "image/cargo.png", this::openOrderManagementView);
+        addButton(optionsPanel, "Báo cáo - thống kê", "image/report.png", this::viewReports);
     }
 
-    */
+
 
     // Add options for Employee
     private void addEmployeeOptions(JPanel optionsPanel) {
@@ -156,10 +166,13 @@ public class MainView extends JFrame {
         addButton(optionsPanel, "Danh sách nhà cung cấp", "image/manufacture.png", this::openSupplierManagementView);
         addButton(optionsPanel, "Danh sách khách hàng", "image/customer-loyalty.png", this::openCustomerManagementView);
         addButton(optionsPanel, "Danh sách đơn hàng", "image/cargo.png", this::openOrderManagementView);
-        addButton(optionsPanel, "Quản lý Phiếu Nhập và Xuất", "image/export.png", this::openExportManagementView);
+        addButton(optionsPanel, "Quản lý Phiếu Nhập ", "image/export.png", this::openExportManagementView);
+        addButton(optionsPanel, "Quản lý Phiếu Xuất", "image/export.png", this::openExportXuatManagementView);
+
         addButton(optionsPanel, "Báo cáo - thống kê", "image/report.png", this::viewReports);
 
     }
+
 
 
 
@@ -194,7 +207,7 @@ public class MainView extends JFrame {
 
     private void openKhoManagementView() {
         try {
-            WarehouseManagementView warehouseManagementView = new WarehouseManagementView(this, maChiNhanh);
+            WarehouseManagementView warehouseManagementView = new WarehouseManagementView(this, maChiNhanh,userRole);
             warehouseManagementView.setVisible(true);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -223,11 +236,16 @@ public class MainView extends JFrame {
     }
 
     private void openExportManagementView() {
-
+        PurchaseOrderGUI ReceiptNoteView = new PurchaseOrderGUI(this);
+        ReceiptNoteView.setVisible(true);
     }
 
     private void viewReports() {
-        JOptionPane.showMessageDialog(this, "Xem báo cáo được chọn.");
+        ReportGUI ReportGUI = new ReportGUI(this);
+
+    }
+
+    private void openExportXuatManagementView() {
     }
 
     private void manageEmployeesInBranch()

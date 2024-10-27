@@ -75,6 +75,32 @@ public class WarehouseDAO {
         return warehouses; // Trả về danh sách kho
     }
 
+    // Lấy danh sách tên kho
+    /*public List<Warehouse> getAllNameWarehouses(int maChiNhanh) throws SQLException {
+        List<Warehouse> warehouses = new ArrayList<>();
+        String queryName = "SELECT MaKho, TenKho FROM Kho WHERE MaChiNhanh = ?"; // Thêm điều kiện lọc theo mã chi nhánh
+        String serverURL = getServerURLByBranch(maChiNhanh);
+
+        try (Connection connection = dbConnection.connectToServer(serverURL);
+             PreparedStatement stmt = connection.prepareStatement(queryName)) {
+
+            stmt.setInt(1, maChiNhanh);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int maKho = rs.getInt("MaKho");
+                String tenKho = rs.getString("TenKho");
+                warehouses.add(new Warehouse(maKho, tenKho));
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy danh sách tên kho: " + e.getMessage());
+            throw e;
+        }
+        return warehouses; // Trả về danh sách tên kho
+    }
+
+     */
+
     // Thêm kho mới
     public void addWarehouse(Warehouse warehouse) throws SQLException {
         String queryCheck = "SELECT COUNT(*) FROM Kho WHERE MaKho = ?";
@@ -107,7 +133,6 @@ public class WarehouseDAO {
             throw e;
         }
     }
-
 
     // Cập nhật thông tin kho
     public void updateWarehouse(Warehouse warehouse) throws SQLException {
@@ -150,8 +175,6 @@ public class WarehouseDAO {
         }
     }
 
-
-
     // Lấy URL của server dựa trên mã chi nhánh
     private String getServerURLByBranch(int maChiNhanh) {
         switch (maChiNhanh) {
@@ -159,8 +182,8 @@ public class WarehouseDAO {
                 return DistributedDatabaseConnection.SERVER2_URL; // URL server chứa chi nhánh 1
             case 2:
                 return DistributedDatabaseConnection.SERVER3_URL; // URL server chứa chi nhánh 2
-           // case 3:
-               // return DistributedDatabaseConnection.SERVER4_URL; // URL server chứa chi nhánh 3
+            // case 3:
+            //     return DistributedDatabaseConnection.SERVER4_URL; // URL server chứa chi nhánh 3
             default:
                 throw new IllegalArgumentException("Chi nhánh không hợp lệ: " + maChiNhanh);
         }

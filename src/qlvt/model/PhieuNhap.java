@@ -1,25 +1,23 @@
 package qlvt.model;
 
+import qlvt.connect.EmployeeDAO;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 public class PhieuNhap {
     private int maPhieuNhap;
-    private LocalDate ngayNhap;
+    private Date ngayNhap;
     private int maNhanVien;
     private int maKho;
     private int maNhaCungCap;
 
-    // Constructor
-    public PhieuNhap(int maPhieuNhap, LocalDate ngayNhap, int maNhanVien, int maKho, int maNhaCungCap) {
+    public PhieuNhap(int maPhieuNhap, Date ngayNhap, int maNhanVien, int maKho, int maNhaCungCap) {
         this.maPhieuNhap = maPhieuNhap;
         this.ngayNhap = ngayNhap;
         this.maNhanVien = maNhanVien;
         this.maKho = maKho;
         this.maNhaCungCap = maNhaCungCap;
     }
-
-
 
     // Getters and Setters
     public int getMaPhieuNhap() {
@@ -30,11 +28,11 @@ public class PhieuNhap {
         this.maPhieuNhap = maPhieuNhap;
     }
 
-    public LocalDate getNgayNhap() {
+    public Date getNgayNhap() {
         return ngayNhap;
     }
 
-    public void setNgayNhap(LocalDate ngayNhap) {
+    public void setNgayNhap(Date ngayNhap) {
         this.ngayNhap = ngayNhap;
     }
 
@@ -61,5 +59,8 @@ public class PhieuNhap {
     public void setMaNhaCungCap(int maNhaCungCap) {
         this.maNhaCungCap = maNhaCungCap;
     }
-}
 
+
+
+
+}
