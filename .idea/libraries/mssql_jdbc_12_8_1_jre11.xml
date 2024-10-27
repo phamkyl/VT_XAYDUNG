@@ -2,8 +2,10 @@
   <library name="mssql-jdbc-12.8.1.jre11">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../../intelliJ/sqljdbc_12.8.1.0_enu/sqljdbc_12.8/enu/jars/mssql-jdbc-12.8.1.jre11.jar!/" />
+      <root url="file://$PROJECT_DIR$/../../intelliJ/jar_files" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../intelliJ/jar_files" recursive="false" />
   </library>
 </component>

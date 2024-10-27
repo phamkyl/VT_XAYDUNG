@@ -101,6 +101,7 @@ public class OrderManagementView extends JDialog {
         btnUpdateDetail = new JButton("Cập Nhật Chi Tiết");
         btnDeleteDetail = new JButton("Xóa Chi Tiết");
 
+
         JPanel detailButtonPanel = new JPanel();
         detailButtonPanel.add(btnAddDetail);
         detailButtonPanel.add(btnUpdateDetail);
@@ -122,8 +123,9 @@ public class OrderManagementView extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
         add(detailPanel, BorderLayout.EAST); // Details panel on the right
 
-        btnGenerateInvoice = new JButton("Lập Hóa Đơn");
+        btnGenerateInvoice = new JButton("Hóa đơn");
         buttonPanel.add(btnGenerateInvoice);
+        btnGenerateInvoice.addActionListener(e -> generateInvoice());
     }
 
     private void loadOrders() {
@@ -233,5 +235,16 @@ public class OrderManagementView extends JDialog {
         int maVatTu = Integer.parseInt(txtMaVatTu.getText());
         orderDAO.deleteDetail(maDonHang, maVatTu);
         loadOrderDetails(maDonHang);
+    }
+
+    private void generateInvoice() {
+        int selectedRow = orderTable.getSelectedRow();
+        if (selectedRow != -1) {
+            int maDonHang = Integer.parseInt(orderTableModel.getValueAt(selectedRow, 0).toString());
+            InvoiceView invoiceView = new InvoiceView(this, maDonHang);
+            invoiceView.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn đơn hàng để lập hóa đơn.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        }
     }
 }

@@ -27,11 +27,11 @@ public class ReportGUI {
 
     private void initialize(Frame parent) {
         dialog = new JDialog(parent, "Thống Kê", true);
-        dialog.setSize(450, 500);
-        dialog.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Add padding around components
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        dialog.setSize(800, 600);
+        dialog.setLayout(new BorderLayout());
+
+        // Tạo JPanel với GridLayout 4x3 cho các nhãn
+        JPanel gridPanel = new JPanel(new GridLayout(4, 3, 9, 9));
 
         // Tạo các JLabel để hiển thị dữ liệu
         lblTongPhieuNhap = createLabel("Tổng Phiếu Nhập: ");
@@ -46,27 +46,29 @@ public class ReportGUI {
         lblTongNhaCungCap = createLabel("Tổng Nhà Cung Cấp: ");
         lblTongNhanVien = createLabel("Tổng Nhân Viên: ");
 
+        // Thêm các nhãn vào lưới
+        gridPanel.add(lblTongPhieuNhap);
+        gridPanel.add(lblTongPhieuXuat);
+        gridPanel.add(lblTongVatTuNhap);
+        gridPanel.add(lblTongVatTuXuat);
+        gridPanel.add(lblTongHoaDon);
+        gridPanel.add(lblTongDoanhThu);
+        gridPanel.add(lblTongKho);
+        gridPanel.add(lblKhoChiNhanh1);
+        gridPanel.add(lblKhoChiNhanh2);
+        gridPanel.add(lblTongNhaCungCap);
+        gridPanel.add(lblTongNhanVien);
+
         // Tạo nút để lấy dữ liệu thống kê
         btnFetchData = new JButton("Lấy Dữ Liệu");
-        btnFetchData.setBackground(new Color(76, 175, 80)); // Custom color
-        btnFetchData.setForeground(Color.WHITE); // Text color
+        btnFetchData.setBackground(new Color(76, 175, 80)); // Custom button color
+        btnFetchData.setForeground(Color.WHITE); // Text color for button
         btnFetchData.setFocusPainted(false);
         btnFetchData.addActionListener(e -> fetchData());
 
-        // Set GridBagLayout constraints for labels and button
-        int row = 0;
-        dialog.add(lblTongPhieuNhap, getGbc(gbc, row++, 0));
-        dialog.add(lblTongPhieuXuat, getGbc(gbc, row++, 0));
-        dialog.add(lblTongVatTuNhap, getGbc(gbc, row++, 0));
-        dialog.add(lblTongVatTuXuat, getGbc(gbc, row++, 0));
-        dialog.add(lblTongHoaDon, getGbc(gbc, row++, 0));
-        dialog.add(lblTongDoanhThu, getGbc(gbc, row++, 0));
-        dialog.add(lblTongKho, getGbc(gbc, row++, 0));
-        dialog.add(lblKhoChiNhanh1, getGbc(gbc, row++, 0));
-        dialog.add(lblKhoChiNhanh2, getGbc(gbc, row++, 0));
-        dialog.add(lblTongNhaCungCap, getGbc(gbc, row++, 0));
-        dialog.add(lblTongNhanVien, getGbc(gbc, row++, 0));
-        dialog.add(btnFetchData, getGbc(gbc, row++, 0));
+        // Thêm lưới và nút vào BorderLayout của dialog
+        dialog.add(gridPanel, BorderLayout.CENTER);
+        dialog.add(btnFetchData, BorderLayout.SOUTH);
 
         dialog.setLocationRelativeTo(parent); // Center the dialog relative to the parent
         dialog.setVisible(true);
@@ -75,15 +77,14 @@ public class ReportGUI {
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(new Font("Arial", Font.PLAIN, 14));
-        label.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1)); // Border around labels
+        label.setOpaque(true); // Cho phép hiển thị màu nền
+        label.setForeground(Color.WHITE);
+        label.setBackground(new Color(76, 175, 80)); // Màu nền xanh lá cây
+        label.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1)); // Viền xám quanh nhãn
+        label.setHorizontalAlignment(SwingConstants.CENTER); // Căn giữa chữ
         return label;
     }
 
-    private GridBagConstraints getGbc(GridBagConstraints gbc, int gridy, int gridx) {
-        gbc.gridx = gridx;
-        gbc.gridy = gridy;
-        return gbc;
-    }
 
     private void fetchData() {
         report_thongkeDao reportDao = new report_thongkeDao();
