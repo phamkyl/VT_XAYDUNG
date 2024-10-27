@@ -2,25 +2,26 @@ package qlvt.model;
 
 import java.math.BigDecimal;
 
-public class ChiTietPhieuXuat {
-    private int maPhieuXuat;
+public class ChiTietDonHang {
+
+    private int maDonHang;
     private int maVatTu;
     private int soLuong;
     private BigDecimal gia;
 
-    public ChiTietPhieuXuat(int maPhieuXuat, int maVatTu, int soLuong, BigDecimal gia) {
-        this.maPhieuXuat = maPhieuXuat;
+    public ChiTietDonHang(int maDonHang, int maVatTu, int soLuong, BigDecimal gia) {
+        this.maDonHang = maDonHang;
         this.maVatTu = maVatTu;
-        setSoLuong(soLuong); // Sử dụng setter để kiểm tra
-        setGia(gia); // Sử dụng setter để kiểm tra
+        setSoLuong(soLuong); // Use setter for validation
+        setGia(gia); // Use setter for validation
     }
 
-    public int getMaPhieuXuat() {
-        return maPhieuXuat;
+    public int getMaDonHang() {
+        return maDonHang;
     }
 
-    public void setMaPhieuXuat(int maPhieuXuat) {
-        this.maPhieuXuat = maPhieuXuat;
+    public void setMaDonHang(int maDonHang) {
+        this.maDonHang = maDonHang;
     }
 
     public int getMaVatTu() {
@@ -36,7 +37,9 @@ public class ChiTietPhieuXuat {
     }
 
     public void setSoLuong(int soLuong) {
-
+        if (soLuong < 0) {
+            throw new IllegalArgumentException("Số lượng không thể âm.");
+        }
         this.soLuong = soLuong;
     }
 
@@ -53,8 +56,8 @@ public class ChiTietPhieuXuat {
 
     @Override
     public String toString() {
-        return "ChiTietPhieuXuat{" +
-                "maPhieuXuat=" + maPhieuXuat +
+        return "ChiTietDonHang{" +
+                "maDonHang=" + maDonHang +
                 ", maVatTu=" + maVatTu +
                 ", soLuong=" + soLuong +
                 ", gia=" + gia +

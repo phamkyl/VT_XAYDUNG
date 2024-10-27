@@ -231,8 +231,8 @@ public class MainView extends JFrame {
     }
 
     private void openOrderManagementView() {
-        OrderManagementView orderManagementView = new OrderManagementView(this);
-        orderManagementView.setVisible(true);
+        OrderManagementView OrderManagementView = new OrderManagementView(this);
+        OrderManagementView.setVisible(true);
     }
 
     private void openExportManagementView() {
@@ -246,6 +246,8 @@ public class MainView extends JFrame {
     }
 
     private void openExportXuatManagementView() {
+        PhieuXuatGUI PhieuXuatGUI = new PhieuXuatGUI(this);
+        PhieuXuatGUI.setVisible(true);
     }
 
     private void manageEmployeesInBranch()

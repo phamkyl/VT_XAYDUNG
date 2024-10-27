@@ -15,6 +15,11 @@ public class Order {
         this.tinhTrangDonHang = tinhTrangDonHang;
     }
 
+    public Order() {
+
+    }
+
+
     public int getMaDonHang() {
         return maDonHang;
     }
